@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Rules\RegistrationRule;
+use App\Rules\UpperCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use function PHPUnit\Framework\assertNotNull;
@@ -206,6 +209,48 @@ class ValidatorTest extends TestCase
         });
 
         self::assertTrue($validator->fails());
+
+        Log::info($validator->errors()->toJson(JSON_PRETTY_PRINT));
+
+    }
+
+    public function testCustomRule()
+    {
+
+        $data = [
+            "username" => "MEMEK",
+            "password" => "MEMEK"
+        ];
+
+        $rules = [
+            "username" => ['required', new UpperCase()],
+            "password" => ["required", "min:6", "max:20", new RegistrationRule()]
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        self::assertTrue($validator->fails());
+
+        Log::info($validator->errors()->toJson(JSON_PRETTY_PRINT));
+
+    }
+
+    public function testRuleClass()
+    {
+
+        $data = [
+            "username" => "MEMEK",
+            "password" => "MEMEKMEMEK!@19"
+        ];
+
+        $rules = [
+            "username" => ['required', new UpperCase()],
+            "password" => ["required", "min:6", "max:20", Password::min(6)->letters()->numbers()->symbols()]
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        self::assertTrue($validator->passes());
 
         Log::info($validator->errors()->toJson(JSON_PRETTY_PRINT));
 
