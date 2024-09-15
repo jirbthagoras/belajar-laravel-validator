@@ -219,7 +219,7 @@ class ValidatorTest extends TestCase
 
         $data = [
             "username" => "MEMEK",
-            "password" => "MEMEK"
+            "password" => "ANJENGANJENGANJENG"
         ];
 
         $rules = [
@@ -253,6 +253,15 @@ class ValidatorTest extends TestCase
         self::assertTrue($validator->passes());
 
         Log::info($validator->errors()->toJson(JSON_PRETTY_PRINT));
+
+    }
+
+    public function testNestedArrayValidation()
+    {
+
+        $data = [
+            'name'
+        ];
 
     }
 
