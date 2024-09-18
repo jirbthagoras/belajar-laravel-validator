@@ -260,8 +260,27 @@ class ValidatorTest extends TestCase
     {
 
         $data = [
-            'name'
+            'name' => [
+                [
+                    "firstName" => "Eko",
+                    "lastName" => "Kurniawan",
+                ],
+
+                [
+                    "firstName" => "Jabriel",
+                    "lastName" => "Hansickma",
+                ],
+            ]
         ];
+
+        $rules = [
+            'name.*.firstName' => ["required", "max:100"],
+            'name.*.lastName' => ["max:100"]
+        ];
+
+        $validator = Validator::make($data, $rules);
+
+        assertTrue($validator->passes());
 
     }
 
